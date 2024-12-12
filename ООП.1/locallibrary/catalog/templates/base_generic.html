@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    {% block title %}<title>Местная библиотека</title>{% endblock %}
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Добавление дополнительного статического CSS файла -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+
+  <body style="">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2">
+          {% block sidebar %}
+            <ul class="sidebar-nav">
+              <li><a href="{% url 'index' %}">Главная страница</a></li>
+              <li><a href="{% url 'books' %}">Все книги</a></li>
+              <li><a href="{% url 'my-borrowed' %}">Книги на руках</a></li>
+                {% if user.is_staff %}
+                    <li><a href="{% url 'reservation_list' %}">Перейти к бронированиям</a></li>
+                {% endif %}
+              {% if user.is_authenticated %}
+                <li>Пользователь: {{ user.get_username }}</li>
+                <li>
+                    <form action="{% url 'logout'%}?next={{request.path}}" method="post">
+                        {% csrf_token %}
+                        <button class="dropdown-item" type="submit">Выйти</button>
+                    </form>
+                </li>
+                <br> {% else %}
+                <form action="{% url 'login' %}" method="post"> {% csrf_token %}
+                    <button class="dropdown-item" type="submit">Войти</button>
+                </form>
+                {% endif %}
+              
+            </ul>
+          {% endblock %}
+        </div>
+        <div class="col-sm-10 ">{% block content %}{% endblock %}</div>
+      </div>
+    </div>
+  {% block pagination %}
+    {% if is_paginated %}
+      <div class="pagination" style="margin-left: 40px;">
+        <span class="page-links">
+          {% if page_obj.has_previous %}
+            <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">прерыдущая</a>
+          {% endif %}
+          <span class="page-current">
+            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+          </span>
+          {% if page_obj.has_next %}
+            <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">следующая</a>
+          {% endif %}
+        </span>
+      </div>
+    {% endif %}
+  {% endblock %}
+  </body>
+</html>

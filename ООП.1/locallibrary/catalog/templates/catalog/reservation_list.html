@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+{% block content %}
+<h1>Список бронирований</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Пользователь</th>
+            <th>Книга</th>
+            <th>Дата бронирования</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations %}
+        <tr>
+            <td>{{ reservation.user.username }}</td>
+            <td>{{ reservation.book.title }}</td>
+            <td>{{ reservation.reservation_date }}</td>
+            <td>{{ reservation.get_status_display }}</td>
+            <td>
+                <form method="post" action="{% url 'confirm_reservation' reservation.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Подтвердить</button>
+                </form>
+                <form method="post" action="{% url 'reject_reservation' reservation.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Отклонить</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>{{ author.first_name }} {{author.last_name}}</h1>
+  <p style="color: gray;">{{ author.date_of_birth }}</p>
+
+  <div style="margin-left:20px;margin-top:20px">
+    <h4>Книги</h4>
+
+    {% for book in author.book_set.all %}
+    <a href="{%url 'book-detail' book.pk%}">{{book}}</a> <br>
+    {{book.summary}}
+    {% endfor %}
+  </div>
+{% endblock %}

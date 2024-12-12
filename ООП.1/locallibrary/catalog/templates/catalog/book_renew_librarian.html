@@ -1,0 +1,55 @@
+{% extends "base_generic.html" %}
+{% block content %}
+
+    <h1>Renew: {{bookinst.book.title}}</h1>
+    <p>Borrower: {{bookinst.borrower}}</p>
+    <p {% if bookinst.is_overdue %} class="text-danger"{% endif %}>Due date: {{bookinst.due_back}}</p>
+
+    <form action="" method="post">
+            <tr>
+          <th><label for="id_renewal_date">Renewal date:</label></th>
+          <td>
+            <input
+              id="id_renewal_date"
+              name="renewal_date"
+              type="text"
+              value="2016-11-08"
+              required />
+            <br />
+            <span class="helptext"
+              >Enter date between now and 4 weeks (default 3 weeks).</span
+            >
+          </td>
+        </tr>
+        
+        <tr>
+            
+          <th><label for="id_renewal_date">Renewal date:</label></th>
+          <td>
+            <ul class="errorlist">
+              <li>Invalid date - renewal in past</li>
+            </ul>
+            <input
+              id="id_renewal_date"
+              name="renewal_date"
+              type="text"
+              value="2015-11-08"
+              required />
+            <br />
+            <span class="helptext"
+              >Enter date between now and 4 weeks (default 3 weeks).</span
+            >
+          </td>
+        </tr>
+        {% csrf_token %}
+        <table>
+        {{ form }}
+        </table>
+        <input type="submit" value="Submit" />
+    </form>
+
+{% endblock %}
+
+{% if perms.catalog.can_mark_returned %}-
+  <a href="{% url 'renew-book-librarian' bookinst.id %}">Renew</a>
+{% endif %}
